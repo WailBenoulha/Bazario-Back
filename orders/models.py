@@ -12,9 +12,13 @@ class Order(models.Model):
 
     store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='orders')
     customer_name = models.CharField(max_length=100)
+    customer_family_name = models.CharField(max_length=200, blank=True, default='')
     customer_email = models.EmailField()
     customer_phone = models.CharField(max_length=20, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    customer_address     = models.TextField(blank=True, default='')                   # NEW
+    customer_city        = models.CharField(max_length=100, blank=True, default='')   # NEW
+    customer_wilaya      = models.CharField(max_length=100, blank=True, default='')   # NEW
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -33,6 +37,8 @@ class OrderItem(models.Model):
     product_name = models.CharField(max_length=200)  # snapshot
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField(default=1)
+    selected_size  = models.CharField(max_length=50, blank=True, default='')   # NEW
+    selected_color = models.CharField(max_length=100, blank=True, default='')  # NEW
 
     @property
     def subtotal(self):
