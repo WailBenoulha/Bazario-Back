@@ -1,5 +1,6 @@
 from django.db import models
 from stores.models import Store
+    
 
 class ProductImage(models.Model):
     product    = models.ForeignKey(
@@ -46,7 +47,11 @@ class Product(models.Model):
     brand       = models.CharField(max_length=100, blank=True, default='')
     material    = models.CharField(max_length=200, blank=True, default='')
     weight      = models.CharField(max_length=50,  blank=True, default='')
-
+    categories = models.ManyToManyField(
+        'stores.Category',
+        blank=True,
+        related_name='products'
+    )
     def __str__(self):
         return self.name
 

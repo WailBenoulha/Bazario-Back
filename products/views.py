@@ -1,17 +1,13 @@
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from django_filters.rest_framework import DjangoFilterBackend
-from .models import Product
-from .serializers import ProductImageSerializer, ProductSerializer,ProductImage
- 
-from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
-
-
-    
-
+from django.shortcuts import render
 from rest_framework import viewsets, permissions
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+from django_filters.rest_framework import DjangoFilterBackend
  
+from .models import Product, ProductImage, ProductSize, ProductColor
+from stores.models import Category
+from .serializers import ProductSerializer, ProductImageSerializer
+ 
+
 class ProductImageViewSet(viewsets.ModelViewSet):
     """
     Handles individual product image uploads and deletions.
@@ -63,10 +59,9 @@ class ProductViewSet(viewsets.ModelViewSet):
  
     def get_queryset(self):
         user = self.request.user
+        base = Product.objects.prefetch_related(
+            'images', 'sizes', 'colors', 'categories'   # ← add 'categories'
+        )
         if not user.is_authenticated:
-            return Product.objects.filter(
-                is_active=True
-            ).prefetch_related('images', 'sizes', 'colors')   # ← prefetch images
-        return Product.objects.filter(
-            store__owner=user
-        ).prefetch_related('images', 'sizes', 'colors')       # ← prefetch images        
+            return base.filter(is_active=True)
+        return base.filter(store__owner=user)  # ← prefetch images        

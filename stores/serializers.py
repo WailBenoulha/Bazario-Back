@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Store
+from .models import Category, Store
  
  
 class StoreSerializer(serializers.ModelSerializer):
@@ -23,3 +23,14 @@ class StoreSerializer(serializers.ModelSerializer):
         if obj.logo:
             return obj.logo.url
         return None
+    
+    
+class CategorySerializer(serializers.ModelSerializer):
+    product_count = serializers.SerializerMethodField()
+ 
+    class Meta:
+        model  = Category
+        fields = ['id', 'store', 'name', 'description', 'icon', 'order', 'product_count']
+ 
+    def get_product_count(self, obj):
+        return obj.products.filter(is_active=True).count()   

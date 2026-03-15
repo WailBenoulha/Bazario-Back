@@ -53,3 +53,27 @@ class StoreViewSet(viewsets.ModelViewSet):
             'is_live': store.is_live,
             'plan': store.plan.name if store.plan else 'free',
         })
+    
+
+
+from rest_framework import viewsets, permissions
+from .models import Category
+from .serializers import CategorySerializer
+ 
+class CategoryViewSet(viewsets.ModelViewSet):
+    serializer_class = CategorySerializer
+ 
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+ 
+    def get_queryset(self):
+        qs = Category.objects.all()
+        store_id = self.request.query_params.get('store')
+        if store_id:
+            qs = qs.filter(store__id=store_id)
+        user = self.request.user
+        if user.is_authenticated:
+            return (qs.filter(store__owner=user) | qs.filter(store__is_live=True)).distinct()
+        return qs.filter(store__is_live=True)

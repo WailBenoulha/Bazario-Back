@@ -42,3 +42,16 @@ class Store(models.Model):
     @property
     def total_customers(self):
         return self.orders.values('customer_email').distinct().count()
+    
+class Category(models.Model):
+    store       = models.ForeignKey('Store', on_delete=models.CASCADE, related_name='categories')
+    name        = models.CharField(max_length=100)
+    description = models.TextField(blank=True, default='')
+    icon        = models.CharField(max_length=50, blank=True, default='FiPackage')  # react-icons key
+    order       = models.PositiveIntegerField(default=0)
+ 
+    class Meta:
+        ordering = ['order', 'id']
+ 
+    def __str__(self):
+        return f"{self.store.name} → {self.name}"
