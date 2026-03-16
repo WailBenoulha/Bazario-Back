@@ -14,6 +14,9 @@ class StoreSerializer(serializers.ModelSerializer):
             # ↓ THESE THREE MUST BE HERE — this is what the storefront reads
             'accent_color', 'button_style', 'panel_style',
             'logo', 'logo_url',
+            'font_display',   
+            'font_body',      
+            'font_accent',
         ]
  
     def get_logo_url(self, obj):
@@ -24,7 +27,7 @@ class StoreSerializer(serializers.ModelSerializer):
             return obj.logo.url
         return None
     
-    
+
 class CategorySerializer(serializers.ModelSerializer):
     product_count = serializers.SerializerMethodField()
  

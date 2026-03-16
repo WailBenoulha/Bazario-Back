@@ -27,6 +27,9 @@ class Store(models.Model):
     logo         = models.ImageField(upload_to='store_logos/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    font_display = models.CharField(max_length=100, blank=True, default='Cormorant Garamond')
+    font_body    = models.CharField(max_length=100, blank=True, default='DM Sans')
+    font_accent  = models.CharField(max_length=100, blank=True, default='Syne')
 
     def __str__(self):
         return self.name
